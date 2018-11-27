@@ -12,6 +12,7 @@ namespace PracticeMeeting
         {
             InitializeComponent();
 
+
             MainPage = new NavigationPage(new PracticeMeetingListPage());
         }
 

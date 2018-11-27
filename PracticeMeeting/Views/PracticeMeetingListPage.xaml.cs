@@ -1,34 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using PracticeMeeting.Services;
+using PracticeMeeting.ViewModels;
 using Xamarin.Forms;
 
 namespace PracticeMeeting.Views
 {
     public partial class PracticeMeetingListPage : ContentPage
     {
+        private PracticeMeetingListViewModel ViewModel;
+
         public PracticeMeetingListPage()
         {
             InitializeComponent();
+
+            BindingContext = new PracticeMeetingListViewModel();
+
+            ViewModel = (PracticeMeetingListViewModel)BindingContext;
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            var dataService = new GenericDataService();
+            ViewModel.GetMeetings();
 
-            practiceMeetingList.ItemsSource = dataService.GetPracticeMeetings();
+            ViewModel.PropertyChanged += Handle_PropertyChanged;
+        }
+        protected override void OnDisappearing()
+        {
+            ViewModel.PropertyChanged -= Handle_PropertyChanged;
+
+            base.OnDisappearing();
         }
 
-        async void Handle_ItemSelected(object sender, Xamarin.Forms.SelectedItemChangedEventArgs e)
+        void Handle_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            var selectedItem = e.SelectedItem;
+            if(e.PropertyName.Equals(nameof(ViewModel.SelectedMeeting)) && ViewModel.SelectedMeeting != null)
+            {
+                Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
+                {
+                    var detailsVM = new PracticeMeetingDetailViewModel(ViewModel.SelectedMeeting);
+                    await Navigation.PushAsync(new PracticeMeetingDetailsPage(detailsVM));
 
-            if(selectedItem != null)
-                await Navigation.PushAsync(new PracticeMeetingDetailsPage(selectedItem));
-
-            practiceMeetingList.SelectedItem = null;
+                    ViewModel.SelectedMeeting = null;
+                });
+            }
         }
     }
 }

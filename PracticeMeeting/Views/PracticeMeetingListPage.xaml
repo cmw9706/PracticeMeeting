@@ -11,7 +11,8 @@
                 <ListView x:Name="practiceMeetingList" 
                           HasUnevenRows="true" 
                           Margin="10,10,10,10"
-                          ItemSelected="Handle_ItemSelected">
+                          ItemsSource="{Binding PracticeMeetings, Mode=TwoWay}"
+                          SelectedItem="{Binding SelectedMeeting, Mode=TwoWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
