@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using PracticeMeeting.Services;
+﻿using PracticeMeeting.Services;
 using Xamarin.Forms;
 
 namespace PracticeMeeting.Views
